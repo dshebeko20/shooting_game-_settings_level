@@ -37,3 +37,8 @@ class Rocket:
     def blitme(self):
         """Рисует ракету в текущей позиции."""
         self.screen.blit(self.image, self.rect)
+
+    def center_rocket(self):
+        """Рамещает ракету в центре левой части экрана."""
+        self.rect.midleft = self.screen_rect.midleft
+        self.y = float(self.rect.y)

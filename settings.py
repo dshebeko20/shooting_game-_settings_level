@@ -10,6 +10,7 @@ class Settings:
 
         # Настройки ракеты.
         self.rocket_speed = 3.5
+        self.rocket_limit = 3
 
         # Параметры снаряда.
         self.bullet_speed = 3.5

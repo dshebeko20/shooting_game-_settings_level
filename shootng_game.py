@@ -1,9 +1,11 @@
 import sys
+from time import sleep
 from random import random
 
 import pygame
 
 from settings import Settings
+from game_stats import GameStats
 from rocket import Rocket
 from bullet import Bullet
 from alien import Alien
@@ -19,6 +21,9 @@ class ShootingGame:
         self.screen = pygame.display.set_mode(
             (self.settings.screen_width, self.settings.screen_height))
         pygame.display.set_caption("Shooting Game")
+
+        # Создание экземпляра для хранениия игровой статистики.
+        self.stats = GameStats(self)
 
         self.rocket = Rocket(self)
         self.bullets = pygame.sprite.Group()
@@ -89,6 +94,26 @@ class ShootingGame:
         if random() < self.settings.alien_frequency:
             alien = Alien(self)
             self.aliens.add(alien)
+
+        # Проверка колллизий "пришелец - ракета".
+        if pygame.sprite.spritecollideany(self.rocket, self.aliens):
+            self._rocket_hit()
+
+    def _rocket_hit(self):
+        """Обрабатывает столскновение ракеты с пришельцем."""
+        # Уменьшение rocket_left.
+        self.stats.rockeet_left = -1
+
+        # Очистка групп aliens и bullets.
+        self.aliens.empty()
+        self.bullets.empty()
+
+        # Создание нового флота и размещение корабля в центре.
+        self._create_alien()
+        self.rocket.center_rocket()
+
+        # Пауза
+        sleep(0.5)
 
     def _update_screen(self):
         """Обновляет изображения на экране и отображает новый экран."""
