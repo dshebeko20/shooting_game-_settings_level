@@ -28,15 +28,20 @@ class ShootingGame:
         self.rocket = Rocket(self)
         self.bullets = pygame.sprite.Group()
         self.aliens = pygame.sprite.Group()
+        
+        # Игра запускается в активном состоянии.
+        self.game_active = True
 
     def run_game(self):
         """Запукскает основной цикл игры."""
         while True:
             self._check_events()
-            self._create_alien()
-            self.rocket.update()
-            self._update_bullets()
-            self.aliens.update()
+            
+            if self.game_active:
+                self._create_alien()
+                self.rocket.update()
+                self._update_bullets()
+                self.aliens.update()
             self._update_screen()
             self.clock.tick(60)
             
@@ -104,19 +109,22 @@ class ShootingGame:
 
     def _rocket_hit(self):
         """Обрабатывает столскновение ракеты с пришельцем."""
-        # Уменьшение rocket_left.
-        self.stats.rockeet_left = -1
+        if self.stats.rockeet_left > 0:
+            # Уменьшение rocket_left.
+            self.stats.rockeet_left -= 1
 
-        # Очистка групп aliens и bullets.
-        self.aliens.empty()
-        self.bullets.empty()
+            # Очистка групп aliens и bullets.
+            self.aliens.empty()
+            self.bullets.empty()
 
-        # Создание нового флота и размещение корабля в центре.
-        self._create_alien()
-        self.rocket.center_rocket()
+            # Создание нового флота и размещение корабля в центре.
+            self._create_alien()
+            self.rocket.center_rocket()
 
-        # Пауза
-        sleep(0.5)
+            # Пауза
+            sleep(0.5)
+        else:
+            self.game_active = False
 
     def _check_aliens_left(self):
         """Проверяет, добрались ли пришельцы до левого края экрана."""
