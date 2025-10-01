@@ -99,6 +99,9 @@ class ShootingGame:
         if pygame.sprite.spritecollideany(self.rocket, self.aliens):
             self._rocket_hit()
 
+        # Проверить, сталкиваются ли пришельцы с левым краем экрана.
+        self._check_aliens_left()
+
     def _rocket_hit(self):
         """Обрабатывает столскновение ракеты с пришельцем."""
         # Уменьшение rocket_left.
@@ -114,6 +117,15 @@ class ShootingGame:
 
         # Пауза
         sleep(0.5)
+
+    def _check_aliens_left(self):
+        """Проверяет, добрались ли пришельцы до левого края экрана."""
+        for alien in self.aliens.sprites():
+            if alien.rect.left <= 0:
+                # Происходит то же, что и при столкновении с ракетой.
+                self._rocket_hit()
+                break
+
 
     def _update_screen(self):
         """Обновляет изображения на экране и отображает новый экран."""
