@@ -21,5 +21,5 @@ class Settings:
 
         # Настройки пришельцев.
         # Задаёт частоту появления пришельцев.
-        self.alien_frequency = 0.020
+        self.alien_frequency = 0.015
         self.alien_speed = 1.5

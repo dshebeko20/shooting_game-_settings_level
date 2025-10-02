@@ -1,5 +1,4 @@
 import sys
-from time import sleep
 from random import random
 
 import pygame
@@ -39,9 +38,11 @@ class ShootingGame:
             
             if self.game_active:
                 self._create_alien()
+                
                 self.rocket.update()
                 self._update_bullets()
-                self.aliens.update()
+                self._update_aliens()
+            
             self._update_screen()
             self.clock.tick(60)
             
@@ -88,9 +89,10 @@ class ShootingGame:
         for bullet in self.bullets.copy():
             if bullet.rect.left >= self.screen.get_rect().right: 
                 self.bullets.remove(bullet)
-        self._bullet_alien_collisions()
         
-    def _bullet_alien_collisions(self):
+        self._check_bullet_alien_collisions()
+        
+    def _check_bullet_alien_collisions(self):
         """Обрабатывает коллизии снарядов с пришельцами."""
         collisions = pygame.sprite.groupcollide(
                 self.bullets, self.aliens, True, True)
@@ -100,12 +102,24 @@ class ShootingGame:
             alien = Alien(self)
             self.aliens.add(alien)
 
-        # Проверка колллизий "пришелец - ракета".
+    def _update_aliens(self):
+        """Обновляетпозиции пришельцев и проверяет столкновения."""
+        self.aliens.update()
+        
         if pygame.sprite.spritecollideany(self.rocket, self.aliens):
             self._rocket_hit()
 
         # Проверить, сталкиваются ли пришельцы с левым краем экрана.
-        self._check_aliens_left()
+        self._check_aliens_left_edge()
+
+
+    def _check_aliens_left_edge(self):
+        """Проверяет, добрались ли пришельцы до левого края экрана."""
+        for alien in self.aliens.sprites():
+            if alien.rect.left <= 0:
+                # Происходит то же, что и при столкновении с ракетой.
+                self._rocket_hit()
+                break
 
     def _rocket_hit(self):
         """Обрабатывает столскновение ракеты с пришельцем."""
@@ -120,20 +134,8 @@ class ShootingGame:
             # Создание нового флота и размещение корабля в центре.
             self._create_alien()
             self.rocket.center_rocket()
-
-            # Пауза
-            sleep(0.5)
         else:
             self.game_active = False
-
-    def _check_aliens_left(self):
-        """Проверяет, добрались ли пришельцы до левого края экрана."""
-        for alien in self.aliens.sprites():
-            if alien.rect.left <= 0:
-                # Происходит то же, что и при столкновении с ракетой.
-                self._rocket_hit()
-                break
-
 
     def _update_screen(self):
         """Обновляет изображения на экране и отображает новый экран."""

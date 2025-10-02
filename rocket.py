@@ -2,6 +2,7 @@ import pygame
 
 class Rocket:
     """Класс для управления ракетой."""
+    
     def __init__(self, sg_game):
         """Инициализирует ракету и задаёт её начальную позицию."""
         self.screen = sg_game.screen
@@ -27,18 +28,17 @@ class Rocket:
         # Обновляется атрибут y, а не rect.
         if self.moving_up and self.rect.top > 0:
             self.y -= self.settings.rocket_speed
-        elif self.moving_down and self.rect.bottom < self.screen_rect.bottom:
+        if self.moving_down and self.rect.bottom < self.screen_rect.bottom:
             self.y += self.settings.rocket_speed
 
         # Обновление атрибута rect на основании self.y
         self.rect.y = self.y
 
-
-    def blitme(self):
-        """Рисует ракету в текущей позиции."""
-        self.screen.blit(self.image, self.rect)
-
     def center_rocket(self):
         """Рамещает ракету в центре левой части экрана."""
         self.rect.midleft = self.screen_rect.midleft
         self.y = float(self.rect.y)
+
+    def blitme(self):
+        """Рисует ракету в текущей позиции."""
+        self.screen.blit(self.image, self.rect)
