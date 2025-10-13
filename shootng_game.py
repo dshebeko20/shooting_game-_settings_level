@@ -5,12 +5,14 @@ import pygame
 
 from settings import Settings
 from game_stats import GameStats
+from button import Button
 from rocket import Rocket
 from bullet import Bullet
 from alien import Alien
 
 class ShootingGame:
     """Класс для управлением ресурсами и поведением игры."""
+    
     def __init__(self):
         """Инициализирует игру и создаёт игровые ресурсы."""
         pygame.init()
@@ -28,8 +30,11 @@ class ShootingGame:
         self.bullets = pygame.sprite.Group()
         self.aliens = pygame.sprite.Group()
         
-        # Игра запускается в активном состоянии.
-        self.game_active = True
+        # Игра запускается в неактивном состоянии.
+        self.game_active = False
+
+        # создание кнопки Play.
+        self.play_button = Button(self, "Play")
 
     def run_game(self):
         """Запукскает основной цикл игры."""
@@ -55,6 +60,15 @@ class ShootingGame:
                 self._check_keydown_events(event)
             elif event.type == pygame.KEYUP:
                 self._check_keyup_events(event)
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                mouse_pos = pygame.mouse.get_pos()
+                self._check_play_button(mouse_pos)
+
+    def _check_play_button(self, mouse_pos):
+        """Запускает новую игру при нажатии кнопки Play."""
+        button_clicked = self.play_button.rect.collidepoint(mouse_pos)
+        if button_clicked and not self.game_active:
+            self._start_game()
     
     def _check_keydown_events(self, event):
         """Реагирует на нажатия клавиш."""
@@ -64,6 +78,8 @@ class ShootingGame:
             self.rocket.moving_down = True
         elif event.key == pygame.K_SPACE:
             self._fire_bullet()
+        elif event.key == pygame.K_p:
+            self._start_game()
         elif event.key == pygame.K_q:
             sys.exit()
             
@@ -73,6 +89,23 @@ class ShootingGame:
             self.rocket.moving_up = False
         elif event.key == pygame.K_DOWN:
             self.rocket.moving_down = False
+
+    def _start_game(self):
+        """Начинает новую игру."""
+        # Срос иигровой статистики. 
+        self.stats.reset_stats()
+        self.game_active = True
+
+        # Очистка групп aliens и bullets.
+        self.bullets.empty()
+        self.aliens.empty()
+
+        # Создание нового флота и размещение ракеты в центре.
+        self._create_alien()
+        self.rocket.center_rocket()
+
+        # Указатель мыши скрывается.
+        pygame.mouse.set_visible(False)
 
     def _fire_bullet(self):
         """Создаёт новый снаряд и добавляет его в группу bullets"""
@@ -103,7 +136,7 @@ class ShootingGame:
             self.aliens.add(alien)
 
     def _update_aliens(self):
-        """Обновляетпозиции пришельцев и проверяет столкновения."""
+        """Обновляет позиции пришельцев и проверяет столкновения."""
         self.aliens.update()
         
         if pygame.sprite.spritecollideany(self.rocket, self.aliens):
@@ -136,6 +169,7 @@ class ShootingGame:
             self.rocket.center_rocket()
         else:
             self.game_active = False
+            pygame.mouse.set_visible(True)
 
     def _update_screen(self):
         """Обновляет изображения на экране и отображает новый экран."""
@@ -145,6 +179,10 @@ class ShootingGame:
             bullet.draw_bullet()
             
         self.aliens.draw(self.screen)
+
+        # Кнопка Play отображаетсяя в том случае, если игра неактивна.
+        if not self.game_active:
+            self.play_button.draw_button()
         
         pygame.display.flip()
 

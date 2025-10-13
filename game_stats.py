@@ -6,5 +6,5 @@ class GameStats:
         self.reset_stats()
 
     def reset_stats(self):
-        """Инициализирует сттистику, изменяющуюся в ходе игры."""
+        """Инициализирует статистику, изменяющуюся в ходе игры."""
         self.rockeet_left = self.settings.rocket_limit
