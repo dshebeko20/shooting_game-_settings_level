@@ -1,4 +1,5 @@
 import sys
+from time import sleep
 from random import random
 
 import pygame
@@ -29,7 +30,10 @@ class ShootingGame:
         self.rocket = Rocket(self)
         self.bullets = pygame.sprite.Group()
         self.aliens = pygame.sprite.Group()
-        
+
+        # Инициализируем счётчик сбитых пришельцев.
+        self.kill_count = 0
+       
         # Игра запускается в неактивном состоянии.
         self.game_active = False
 
@@ -68,6 +72,7 @@ class ShootingGame:
         """Запускает новую игру при нажатии кнопки Play."""
         button_clicked = self.play_button.rect.collidepoint(mouse_pos)
         if button_clicked and not self.game_active:
+            self.settings.initialize_dynamic_settings()
             self._start_game()
     
     def _check_keydown_events(self, event):
@@ -113,7 +118,7 @@ class ShootingGame:
              new_bullet = Bullet(self)
              self.bullets.add(new_bullet)
 
-    def _update_bullets(self):
+    def _update_bullets(self): 
         """ Обнвляет позиции снарядов и уничтожает старые снаряды."""
         # Обновление позиций снарядов.
         self.bullets.update()
@@ -128,7 +133,19 @@ class ShootingGame:
     def _check_bullet_alien_collisions(self):
         """Обрабатывает коллизии снарядов с пришельцами."""
         collisions = pygame.sprite.groupcollide(
-                self.bullets, self.aliens, True, True)
+                self.bullets, self.aliens, True , True)
+        
+        for aliens in collisions.values():
+            self.kill_count += 1
+            if self.kill_count >= 50:
+                self.bullets.empty()
+                self.aliens.empty()
+                self.kill_count = 0
+                # Пауза
+                sleep(0.5)
+                self.rocket.center_rocket()
+                self._create_alien()
+                self.settings.increase_speed()
 
     def _create_alien(self):
         if random() < self.settings.alien_frequency:
@@ -144,7 +161,6 @@ class ShootingGame:
 
         # Проверить, сталкиваются ли пришельцы с левым краем экрана.
         self._check_aliens_left_edge()
-
 
     def _check_aliens_left_edge(self):
         """Проверяет, добрались ли пришельцы до левого края экрана."""
