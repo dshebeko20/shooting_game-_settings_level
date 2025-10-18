@@ -37,8 +37,34 @@ class ShootingGame:
         # Игра запускается в неактивном состоянии.
         self.game_active = False
 
-        # создание кнопки Play.
+        # Создание кнопки Play.
         self.play_button = Button(self, "Play")
+
+        # Coздание кнопок сложности.
+        self._make_difficulty_buttons()
+
+    def _make_difficulty_buttons(self):
+        """Создаёт кнопки повышения сложности уровня."""
+        self.easy_button =  Button(self, "Easy")
+        self.medium_button = Button(self, "Medium")
+        self.difficult_button = Button(self, "Difficult")
+
+        # Размещаем позиции кнопок.
+        self.easy_button.rect.top = (
+            self.play_button.rect.top + 1.5*self.play_button.rect.height)
+        self.easy_button._update_msg_position()
+
+        self.medium_button.rect.top = (
+            self.easy_button.rect.top + 1.5*self.easy_button.rect.height)
+        self.medium_button._update_msg_position()
+
+        self.difficult_button.rect.top = (
+            self.medium_button.rect.top + 1.5*self.medium_button.rect.height)
+        self.difficult_button._update_msg_position()
+
+        # Устанавливваем для средней кнопки цвет, выделенный на изобоажении.
+        self.medium_button.set_highlighted_color()
+
 
     def run_game(self):
         """Запукскает основной цикл игры."""
@@ -67,6 +93,7 @@ class ShootingGame:
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 mouse_pos = pygame.mouse.get_pos()
                 self._check_play_button(mouse_pos)
+                self._check_difficulty_buttons(mouse_pos)
 
     def _check_play_button(self, mouse_pos):
         """Запускает новую игру при нажатии кнопки Play."""
@@ -74,7 +101,28 @@ class ShootingGame:
         if button_clicked and not self.game_active:
             self.settings.initialize_dynamic_settings()
             self._start_game()
-    
+
+    def _check_difficulty_buttons(self, mouse_pos):
+        """Устанавливает подходящий уровень сложности."""
+        easy_button_clicked = self.easy_button.rect.collidepoint(mouse_pos)
+        medium_button_clicked = self.medium_button.rect.collidepoint(mouse_pos)
+        diff_button_clicked = self.difficult_button.rect.collidepoint(mouse_pos)
+        if easy_button_clicked:
+            self.settings.difficulty_level = 'easy'
+            self.easy_button.set_highlighted_color()
+            self.medium_button.set_base_color()
+            self.difficult_button.set_base_color()
+        elif medium_button_clicked:
+            self.settings.difficulty_level = 'medium'
+            self.easy_button.set_base_color()
+            self.medium_button.set_highlighted_color()
+            self.difficult_button.set_base_color()
+        elif diff_button_clicked:
+            self.settings.difficulty_level = 'difficult'
+            self.easy_button.set_base_color()
+            self.medium_button.set_base_color()
+            self.difficult_button.set_highlighted_color()
+
     def _check_keydown_events(self, event):
         """Реагирует на нажатия клавиш."""
         if event.key == pygame.K_UP:
@@ -137,7 +185,7 @@ class ShootingGame:
         
         for aliens in collisions.values():
             self.kill_count += 1
-            if self.kill_count >= 50:
+            if self.kill_count >= 30:
                 self.bullets.empty()
                 self.aliens.empty()
                 self.kill_count = 0
@@ -196,9 +244,12 @@ class ShootingGame:
             
         self.aliens.draw(self.screen)
 
-        # Кнопка Play отображаетсяя в том случае, если игра неактивна.
+        # Кнопка Play отображается в том случае, если игра неактивна.
         if not self.game_active:
             self.play_button.draw_button()
+            self.easy_button.draw_button()
+            self.medium_button.draw_button()
+            self.difficult_button.draw_button()
         
         pygame.display.flip()
 
