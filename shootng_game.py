@@ -66,7 +66,6 @@ class ShootingGame:
         # Устанавливваем для средней кнопки цвет, выделенный на изобоажении.
         self.medium_button.set_highlighted_color()
 
-
     def run_game(self):
         """Запукскает основной цикл игры."""
         while True:
@@ -150,6 +149,7 @@ class ShootingGame:
         self.stats.reset_stats()
         self.sb.prep_score()
         self.sb.prep_level()
+        self.sb.prep_rockets()
         self.game_active = True
 
         # Очистка групп aliens и bullets.
@@ -184,7 +184,7 @@ class ShootingGame:
     def _check_bullet_alien_collisions(self):
         """Обрабатывает коллизии снарядов с пришельцами."""
         collisions = pygame.sprite.groupcollide(
-                self.bullets, self.aliens, True , True)
+                self.bullets, self.aliens, True, True)
         
         if collisions:
             for aliens in collisions.values():
@@ -230,9 +230,10 @@ class ShootingGame:
 
     def _rocket_hit(self):
         """Обрабатывает столскновение ракеты с пришельцем."""
-        if self.stats.rockeet_left > 0:
-            # Уменьшение rocket_left.
-            self.stats.rockeet_left -= 1
+        if self.stats.rocket_left > 1:
+            # Уменьшение rocket_left и обновление панели счёта.
+            self.stats.rocket_left -= 1
+            self.sb.prep_rockets()
 
             # Очистка групп aliens и bullets.
             self.aliens.empty()

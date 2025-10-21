@@ -7,6 +7,7 @@ class Settings:
         self.screen_width = 1200
         self.screen_height = 800
         self.bg_color = (230, 230, 230)
+        self.margin = 95 # отступ от верхнего края экрана
         
         # Параметры снаряда.
         self.bullet_width = 12
@@ -26,7 +27,7 @@ class Settings:
     def initialize_dynamic_settings(self):
         """Инициализирует настройки, изменяющиеся в ходе игры."""
         if self.difficulty_level == 'easy':
-            self.rocket_limit = 5
+            self.rocket_limit = 4
             self.bullets_allowed = 10
             self.rocket_speed = 3.0
             self.bullet_speed = 6.0

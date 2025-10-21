@@ -1,10 +1,12 @@
 import pygame
+from pygame.sprite import Sprite
 
-class Rocket:
+class Rocket(Sprite):
     """Класс для управления ракетой."""
     
     def __init__(self, sg_game):
         """Инициализирует ракету и задаёт её начальную позицию."""
+        super().__init__()
         self.screen = sg_game.screen
         self.settings = sg_game.settings
         self.screen_rect = sg_game.screen.get_rect()
@@ -26,7 +28,7 @@ class Rocket:
     def update(self):
         """Обновляет позицию ракеты с учетом флагов."""
         # Обновляется атрибут y, а не rect.
-        if self.moving_up and self.rect.top > 0:
+        if self.moving_up and self.rect.top > self.settings.margin:
             self.y -= self.settings.rocket_speed
         if self.moving_down and self.rect.bottom < self.screen_rect.bottom:
             self.y += self.settings.rocket_speed

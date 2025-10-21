@@ -22,8 +22,9 @@ class Alien(Sprite):
         self.rect.left = self.screen.get_rect().right
 
         # Размещение пришельца на высоту экрана минус высота одного пришельца.
-        alien_top_max = self.settings.screen_height - self.rect.height
-        self.rect.top = randint(0, alien_top_max) 
+        margin = self.settings.margin  
+        alien_top_max = self.settings.screen_height - self.rect.height 
+        self.rect.top = randint(margin, alien_top_max)
 
         # Сохранение точной горизонтальной позиции пришельца.
         self.x = float(self.rect.x)
