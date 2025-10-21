@@ -16,6 +16,9 @@ class Settings:
         # Темп усколения игры.
         self.speedup_scale = 1.1
 
+        # Темп роста стоиости риишельца.
+        self.score_scale = 1.5
+
         self.difficulty_level = 'medium'
 
         self.initialize_dynamic_settings()
@@ -29,6 +32,7 @@ class Settings:
             self.bullet_speed = 6.0
             self.alien_speed = 1.0
             self.alien_frequency = 0.005 # Частота появления пришельцев.
+            self.alien_points = 25
         elif self.difficulty_level == 'medium':
             self.rocket_limit = 3
             self.bullets_allowed = 8
@@ -36,6 +40,7 @@ class Settings:
             self.bullet_speed = 6.0
             self.alien_speed = 1.5
             self.alien_frequency = 0.010 # Частота появления пришельцев.
+            self.alien_points = 50
         elif self.difficulty_level == 'difficult':
             self.rocket_limit = 2
             self.bullets_allowed = 6
@@ -43,12 +48,15 @@ class Settings:
             self.bullet_speed = 6
             self.alien_speed = 2.0
             self.alien_frequency = 0.015 # Частота появления пришельцев.
+            self.alien_points = 75
 
     def increase_speed(self):
         """Увеличивает настройки скорости."""
         self.rocket_speed *= self.speedup_scale
         self.bullet_speed *= self.speedup_scale
         self.alien_speed *= self.speedup_scale
+
+        self.alien_points = int(self.alien_points * self.score_scale)
 
     def set_difficulty(self, dif_settings):
         if dif_settings == 'easy':

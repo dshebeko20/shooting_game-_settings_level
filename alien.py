@@ -8,7 +8,7 @@ class Alien(Sprite):
     """Класс, представляющий одного пришельца."""
 
     def __init__(self, sg_game):
-        """Инициалищирует пришельца и создаёт его начаальную позицию."""
+        """Инициализирует пришельца и создаёт его начаальную позицию."""
         super().__init__()
         self.screen = sg_game.screen
         self.settings = sg_game.settings
@@ -23,7 +23,7 @@ class Alien(Sprite):
 
         # Размещение пришельца на высоту экрана минус высота одного пришельца.
         alien_top_max = self.settings.screen_height - self.rect.height
-        self.rect.top = randint(0, alien_top_max)
+        self.rect.top = randint(0, alien_top_max) 
 
         # Сохранение точной горизонтальной позиции пришельца.
         self.x = float(self.rect.x)

@@ -6,6 +6,7 @@ import pygame
 
 from settings import Settings
 from game_stats import GameStats
+from scoreboard import Scoreboard
 from button import Button
 from rocket import Rocket
 from bullet import Bullet
@@ -26,7 +27,7 @@ class ShootingGame:
 
         # Создание экземпляра для хранениия игровой статистики.
         self.stats = GameStats(self)
-
+        self.sb = Scoreboard(self)
         self.rocket = Rocket(self)
         self.bullets = pygame.sprite.Group()
         self.aliens = pygame.sprite.Group()
@@ -145,8 +146,10 @@ class ShootingGame:
 
     def _start_game(self):
         """Начинает новую игру."""
-        # Срос иигровой статистики. 
+        # Срос игровой статистики. 
         self.stats.reset_stats()
+        self.sb.prep_score()
+        self.sb.prep_level()
         self.game_active = True
 
         # Очистка групп aliens и bullets.
@@ -183,14 +186,21 @@ class ShootingGame:
         collisions = pygame.sprite.groupcollide(
                 self.bullets, self.aliens, True , True)
         
-        for aliens in collisions.values():
-            self.kill_count += 1
-            if self.kill_count >= 30:
+        if collisions:
+            for aliens in collisions.values():
+                self.stats.score += self.settings.alien_points * len(aliens)
+                self.sb.prep_score()
+                self.sb.check_high_score()
+                self.kill_count += 1
+                
+            if self.kill_count >= 50:
+                self.stats.level += 1 
+                self.sb.prep_level()
                 self.bullets.empty()
                 self.aliens.empty()
                 self.kill_count = 0
                 # Пауза
-                sleep(0.5)
+                sleep(0.5) 
                 self.rocket.center_rocket()
                 self._create_alien()
                 self.settings.increase_speed()
@@ -243,6 +253,9 @@ class ShootingGame:
             bullet.draw_bullet()
             
         self.aliens.draw(self.screen)
+
+        # Вывод информации о счёте.
+        self.sb.show_score()
 
         # Кнопка Play отображается в том случае, если игра неактивна.
         if not self.game_active:
