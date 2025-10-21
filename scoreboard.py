@@ -18,7 +18,10 @@ class Scoreboard:
         self.text_color = (102, 102, 255)
         self.font = pygame.font.SysFont(None, 48)
 
-        # Подготовка изображений счетов.
+        self.prep_images()
+
+    def prep_images(self):
+        """Подготавливает изображение счетов."""
         self.prep_score()
         self.prep_high_score()
         self.prep_level()
@@ -43,7 +46,7 @@ class Scoreboard:
         self.high_score_image = self.font.render(high_score_str, True,
                 self.text_color, self.settings.bg_color)
         
-        # Рекорд выравнивается по центру верхней стороны экрана.
+        # Рекорд выравнивается ближе к правой стороне экрана.
         self.hight_score_rect = self.high_score_image.get_rect()
         self.hight_score_rect.right = self.score_rect.left - 20
         self.hight_score_rect.top = self.score_rect.top
@@ -75,7 +78,7 @@ class Scoreboard:
             self.rockets.add(rocket)
 
     def show_score(self):
-        """Выводит счета, уровень и количество кораблей на экран."""
+        """Выводит счета, уровень и количество ракет на экран."""
         self.screen.blit(self.score_image, self.score_rect)
         self.screen.blit(self.high_score_image, self.hight_score_rect)
         self.screen.blit(self.level_image, self.level_rect)

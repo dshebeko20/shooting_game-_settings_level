@@ -7,7 +7,7 @@ class Settings:
         self.screen_width = 1200
         self.screen_height = 800
         self.bg_color = (230, 230, 230)
-        self.margin = 95 # отступ от верхнего края экрана
+        self.margin = 95 # Отступ от верхнего края экрана.
         
         # Параметры снаряда.
         self.bullet_width = 12

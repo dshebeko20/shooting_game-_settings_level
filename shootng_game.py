@@ -23,7 +23,7 @@ class ShootingGame:
 
         self.screen = pygame.display.set_mode(
             (self.settings.screen_width, self.settings.screen_height))
-        pygame.display.set_caption("Shooting Game")
+        pygame.display.set_caption("Shooting game")
 
         # Создание экземпляра для хранениия игровой статистики.
         self.stats = GameStats(self)
@@ -63,7 +63,7 @@ class ShootingGame:
             self.medium_button.rect.top + 1.5*self.medium_button.rect.height)
         self.difficult_button._update_msg_position()
 
-        # Устанавливваем для средней кнопки цвет, выделенный на изобоажении.
+        # Устанавливаем для средней кнопки цвет, выделенный на изобоажении.
         self.medium_button.set_highlighted_color()
 
     def run_game(self):
@@ -147,9 +147,7 @@ class ShootingGame:
         """Начинает новую игру."""
         # Срос игровой статистики. 
         self.stats.reset_stats()
-        self.sb.prep_score()
-        self.sb.prep_level()
-        self.sb.prep_rockets()
+        self.sb.prep_images()
         self.game_active = True
 
         # Очистка групп aliens и bullets.
@@ -192,18 +190,20 @@ class ShootingGame:
                 self.sb.prep_score()
                 self.sb.check_high_score()
                 self.kill_count += 1
-                
+            
             if self.kill_count >= 50:
-                self.stats.level += 1 
-                self.sb.prep_level()
-                self.bullets.empty()
-                self.aliens.empty()
-                self.kill_count = 0
-                # Пауза
-                sleep(0.5) 
-                self.rocket.center_rocket()
-                self._create_alien()
-                self.settings.increase_speed()
+                self._start_new_level()
+                
+    def _start_new_level(self):
+        self.stats.level += 1 
+        self.sb.prep_level()
+        self.aliens.empty()
+        self.kill_count = 0
+        # Пауза
+        sleep(0.5) 
+        self.rocket.center_rocket()
+        self._create_alien()
+        self.settings.increase_speed()
 
     def _create_alien(self):
         if random() < self.settings.alien_frequency:
@@ -229,7 +229,7 @@ class ShootingGame:
                 break
 
     def _rocket_hit(self):
-        """Обрабатывает столскновение ракеты с пришельцем."""
+        """Обрабатывает столкновение ракеты с пришельцем."""
         if self.stats.rocket_left > 1:
             # Уменьшение rocket_left и обновление панели счёта.
             self.stats.rocket_left -= 1
