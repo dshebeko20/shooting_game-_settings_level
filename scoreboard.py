@@ -30,7 +30,7 @@ class Scoreboard:
     def prep_score(self):
         """Преобразует текущий счёт в графическое изображение."""
         rounded_score = round(self.stats.score, -1)
-        score_str = f"Account: {rounded_score:,}"
+        score_str = f"Score: {rounded_score:,}"
         self.score_image = self.font.render(score_str, True,
                 self.text_color, self.settings.bg_color)
         
@@ -48,8 +48,8 @@ class Scoreboard:
         
         # Рекорд выравнивается ближе к правой стороне экрана.
         self.hight_score_rect = self.high_score_image.get_rect()
-        self.hight_score_rect.right = self.score_rect.left - 20
-        self.hight_score_rect.top = self.score_rect.top
+        self.hight_score_rect.right = self.score_rect.right
+        self.hight_score_rect.top = self.score_rect.bottom + 10
 
     def check_high_score(self):
         """Проверяет, появился ли новый рекорд."""
@@ -66,7 +66,7 @@ class Scoreboard:
         # Уровень выводится под текущим счётом.
         self.level_rect = self.level_image.get_rect()
         self.level_rect.right = self.score_rect.right
-        self.level_rect.top = self.score_rect.bottom + 10
+        self.level_rect.top = self.hight_score_rect.bottom + 10
 
     def prep_rockets(self):
         """Сообщает количество оставшихся кораблей."""

@@ -11,6 +11,7 @@ from button import Button
 from rocket import Rocket
 from bullet import Bullet
 from alien import Alien
+from music import Music
 
 class ShootingGame:
     """Класс для управлением ресурсами и поведением игры."""
@@ -18,6 +19,7 @@ class ShootingGame:
     def __init__(self):
         """Инициализирует игру и создаёт игровые ресурсы."""
         pygame.init()
+        pygame.mixer.init()
         self.clock = pygame.time.Clock()
         self.settings = Settings()
 
@@ -28,6 +30,7 @@ class ShootingGame:
         # Создание экземпляра для хранениия игровой статистики.
         self.stats = GameStats(self)
         self.sb = Scoreboard(self)
+        self.music = Music(self)
         self.rocket = Rocket(self)
         self.bullets = pygame.sprite.Group()
         self.aliens = pygame.sprite.Group()
@@ -101,6 +104,7 @@ class ShootingGame:
         if button_clicked and not self.game_active:
             self.settings.initialize_dynamic_settings()
             self._start_game()
+            self.music.play_music_game()
 
     def _check_difficulty_buttons(self, mouse_pos):
         """Устанавливает подходящий уровень сложности."""
@@ -166,6 +170,7 @@ class ShootingGame:
         if len(self.bullets) < self.settings.bullets_allowed:
              new_bullet = Bullet(self)
              self.bullets.add(new_bullet)
+             self.music.play_music_shoot()
 
     def _update_bullets(self): 
         """ Обнвляет позиции снарядов и уничтожает старые снаряды."""
@@ -185,6 +190,7 @@ class ShootingGame:
                 self.bullets, self.aliens, True, True)
         
         if collisions:
+            self.music.play_music_exp()
             for aliens in collisions.values():
                 self.stats.score += self.settings.alien_points * len(aliens)
                 self.sb.prep_score()
@@ -244,6 +250,7 @@ class ShootingGame:
             self.rocket.center_rocket()
         else:
             self.game_active = False
+            self.music.stop_music()
             pygame.mouse.set_visible(True)
 
     def _update_screen(self):
