@@ -1,6 +1,6 @@
-from random import randint
-
 import pygame
+
+from random import randint
 from pygame.sprite import Sprite
 
 

@@ -1,6 +1,6 @@
 import pygame.font
-from pygame.sprite import Group
 
+from pygame.sprite import Group
 from rocket import Rocket
 
 class Scoreboard:
@@ -21,7 +21,7 @@ class Scoreboard:
         self.prep_images()
 
     def prep_images(self):
-        """Подготавливает изображение счетов."""
+        """Подготавливает изображения счетов."""
         self.prep_score()
         self.prep_high_score()
         self.prep_level()
@@ -30,7 +30,7 @@ class Scoreboard:
     def prep_score(self):
         """Преобразует текущий счёт в графическое изображение."""
         rounded_score = round(self.stats.score, -1)
-        score_str = f"Score: {rounded_score:,}"
+        score_str = f"Sco: {rounded_score:,}"
         self.score_image = self.font.render(score_str, True,
                 self.text_color, self.settings.bg_color)
         
@@ -42,11 +42,11 @@ class Scoreboard:
     def prep_high_score(self):
         """Преобразует рекордный счёт в графическое изображение."""
         high_score = round(self.stats.high_score, -1)
-        high_score_str = f"Record: {high_score:,}"
+        high_score_str = f"Rec: {high_score:,}"
         self.high_score_image = self.font.render(high_score_str, True,
                 self.text_color, self.settings.bg_color)
         
-        # Рекорд выравнивается ближе к правой стороне экрана.
+        # Рекорд выравнивается по правой стороне экрана.
         self.hight_score_rect = self.high_score_image.get_rect()
         self.hight_score_rect.right = self.score_rect.right
         self.hight_score_rect.top = self.score_rect.bottom + 10
@@ -59,7 +59,7 @@ class Scoreboard:
 
     def prep_level(self):
         """Преобразует уровень в графическое изображение."""
-        level_str = f"Level: {str(self.stats.level)}"
+        level_str = f"Lev: {str(self.stats.level)}"
         self.level_image = self.font.render(level_str, True,
                 self.text_color, self.settings.bg_color)
         

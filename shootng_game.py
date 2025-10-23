@@ -1,4 +1,6 @@
 import sys
+import json
+from pathlib import Path
 from time import sleep
 from random import random
 
@@ -88,7 +90,7 @@ class ShootingGame:
         """Обрабатывает нажатия клавиш и события мыши."""       
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                sys.exit()
+                self._close_game()
             elif event.type == pygame.KEYDOWN:
                 self._check_keydown_events(event)
             elif event.type == pygame.KEYUP:
@@ -138,7 +140,7 @@ class ShootingGame:
         elif event.key == pygame.K_p:
             self._start_game()
         elif event.key == pygame.K_q:
-            sys.exit()
+            self._close_game()
             
     def _check_keyup_events(self, event):
         """Реагирует на отпускания клавиш."""
@@ -273,6 +275,16 @@ class ShootingGame:
             self.difficult_button.draw_button()
         
         pygame.display.flip()
+
+    def _close_game(self):
+        """Закрывает игру и сохраняет рекорд."""
+        saved_high_score = self.stats.get_saved_high_score()
+        if self.stats.high_score > saved_high_score:
+            path = Path('high_score.json')
+            contents = json.dumps(self.stats.high_score)
+            path.write_text(contents)
+
+        sys.exit()
 
 if __name__ == '__main__':
     # Создание экземпляра и запуск игры.
